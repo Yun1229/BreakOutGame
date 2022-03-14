@@ -25,14 +25,15 @@ public class GameMap {
 		Vector size = new Vector(WIDTH/BLOCK_COLUMNS/2,HEIGHT/BLOCK_LINES/2);
 		Point center = topleft.plus(size);
 		// TODO: return a paddle with given center 
-		return null;
+		return new PaddleState(topleft.plus(new Vector(0,1300)),center);
+		
 	}
 	private static BallState createBall(Point topleft) {
 		Vector centerD = new Vector(WIDTH/BLOCK_COLUMNS/2,HEIGHT/BLOCK_LINES/2);
 		Point center = topleft.plus(centerD);
 		int diameter = INIT_BALL_DIAMETER;
-		// TODO: return a ball with given `center`, `diameter` and initial speed `initvelocity` 
-		return null;
+		// TODO: return a ball with given `center`, `diameter` and initial speed `initvelocity`
+		return new BallState(new Point(center.getX()-(diameter/2),center.getY()-(diameter/2)),new Point(center.getX()+(diameter/2),center.getY()+(diameter/2)),INIT_BALL_VELOCITY);
 	}
 		
 	/**
@@ -50,9 +51,9 @@ public class GameMap {
 		PaddleState paddle = null;
 		
 		Point topLeft = new Point(0,0);
-		assert lines.length < BLOCK_LINES;
+		assert lines.length <= BLOCK_LINES;
 		for(String line : lines) {
-			assert line.length() < BLOCK_COLUMNS;
+			assert line.length() <= BLOCK_COLUMNS;
 			Point cursor = topLeft;
 			for(char c : line.toCharArray()) {
 				switch(c) {

@@ -6,8 +6,17 @@ public class BallState {
 	private Point tl;
 	private Point br;
 	private Vector velocity;
+	private boolean remove=false;
 	
 	
+	
+	public BallState(Point tl, Point br, Vector velocity) {
+		this.tl = tl;
+		this.br = br;
+		this.velocity = velocity;
+	}
+
+
 	public Point getCenter() {
 		Point center = new Point((this.tl.getX()+this.br.getX())/2,(this.tl.getY()+this.br.getY())/2);
 		return center;
@@ -16,4 +25,24 @@ public class BallState {
 	public Vector getVelocity() {
 		return this.velocity;
 	}
+
+	public Point getTl() {
+		return tl;
+	}
+
+	public Point getBr() {
+		return br;
+	}
+
+	public void setVelocity(Vector velocity) {
+		this.velocity = velocity;
+	}
+
+	public boolean isRemoved() {
+		return this.remove;
+	}
+	
+	
+	
+	
 }
