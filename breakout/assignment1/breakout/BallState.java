@@ -1,20 +1,27 @@
 package breakout;
 
+import java.util.Arrays;
+
+/**
+ * 
+ * @immutable
+ *
+ */
+
 public class BallState {
 	// TODO: implement
 
 	private Point tl;
 	private Point br;
 	private Vector velocity;
-	private boolean remove=false;
-
-
+	
 
 	public BallState(Point tl, Point br, Vector velocity) {
 		this.tl = tl;
 		this.br = br;
 		this.velocity = velocity;
 	}
+	
 
 
 	public Point getCenter() {
@@ -34,22 +41,12 @@ public class BallState {
 		return br;
 	}
 
-	public void setVelocity(Vector velocity) {
-		this.velocity = velocity;
-	}
+	
 
-	public boolean isRemoved() {
-		return this.remove;
-	}
 
-	public void getPosition() {
 
-	}
+	
 
-	public void getSize() {
-		int width = br.getY()-tl.getY();
-		int length = br.getX()-tl.getX();
-	}
 
 
 

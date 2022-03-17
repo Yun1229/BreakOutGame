@@ -25,7 +25,7 @@ public class GameMap {
 		Vector size = new Vector(WIDTH/BLOCK_COLUMNS/2,HEIGHT/BLOCK_LINES/2);
 		Point center = topleft.plus(size);
 		// TODO: return a paddle with given center 
-		return new PaddleState(topleft.plus(new Vector(0,1300)),center);
+		return new PaddleState(topleft.plus(new Vector(0,1300)),center,0);
 		
 	}
 	private static BallState createBall(Point topleft) {
@@ -69,4 +69,12 @@ public class GameMap {
 		
 		return new BreakoutState(balls.toArray(new BallState[] {}), blocks.toArray(new BlockState[] {}), bottomRight, paddle);
 	}
+	public static int getHeight() {
+		return HEIGHT;
+	}
+	public static int getWidth() {
+		return WIDTH;
+	}
+	
+	
 }

@@ -78,6 +78,7 @@ public class GameView extends JPanel {
 		}
 		breakoutState.tick(curPaddleDir);
 		if(breakoutState.isDead()) {
+			
 			JOptionPane.showMessageDialog(this, "Game over :-(");
 			System.exit(0);
 		}
@@ -122,9 +123,9 @@ public class GameView extends JPanel {
 		g.setColor(Color.green);
 		PaddleState paddle = breakoutState.getPaddle();
 		// TODO: figure out top-left and bottom right Point of paddle
-		Point tl = paddle.getTl();
-		Point br = paddle.getBr();
-		paintPaddle(g, tl, br);
+		Point tlg = paddle.getTl();
+		Point brg = paddle.getBr();
+		paintPaddle(g, tlg, brg);
 	}
 
 	private void paintPaddle(Graphics g, Point tlg, Point brg) {
