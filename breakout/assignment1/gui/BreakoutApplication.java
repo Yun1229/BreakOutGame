@@ -13,7 +13,8 @@ public class BreakoutApplication {
 ##########
 ##########
 ##########
-     o
+	 
+   o  
 
      =
 

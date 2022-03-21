@@ -1,9 +1,8 @@
 package breakout;
 
+
 import java.util.ArrayList;
 import java.util.Arrays;
-
-import gui.GameView;
 
 // TODO: implement, document
 public class BreakoutState {
@@ -34,11 +33,13 @@ public class BreakoutState {
 	}
 
 	public BlockState[] getBlocks() {
-		ArrayList<BlockState> newblocks = new ArrayList<BlockState>();
+		
 		int i=0;
 		//判斷球有無撞到block
 		ArrayList<BallState> newballs = new ArrayList<BallState>();
 		for (BallState ball : balls) {
+			ArrayList<Point> blockstl = new ArrayList<Point>();
+			ArrayList<BlockState> newblocks = new ArrayList<BlockState>();
 			boolean ballreflectX = false;
 			boolean ballreflectY = false;
 			for (BlockState block: blocks) {
@@ -52,15 +53,24 @@ public class BreakoutState {
 				int blockBY=block.getBr().getY();
 				int blockLX=block.getTl().getX();
 				int blockRX=block.getBr().getX();
+				
 				if (ballLX <= blockRX && ballRX >= blockLX && blockBY >= ballTY && blockTY <= ballBY) {
 					hit = true;
 					i++;
+					blockstl.add(block.getTl());
+					Vector balltoblockvector= new Vector((blockRX+blockLX)/2-ball.getCenter().getX(),(blockBY+blockTY)/2-ball.getCenter().getY());
+					
 					if (ballLX <= blockRX&&ballRX >= blockRX|| ballRX >= blockLX&&ballLX <= blockLX) {
 						ballreflectX=true;
 					}
 					if (blockBY >= ballTY&&blockBY <= ballBY || blockTY <= ballBY&&blockTY >= ballTY) {
-						
 						ballreflectY=true;
+					}
+					if(balltoblockvector.getX()*ball.getVelocity().getX()<0&&ballreflectX&&ballreflectY) {
+						ballreflectX=false;
+					}
+					if(balltoblockvector.getY()*ball.getVelocity().getY()<0&&ballreflectX&&ballreflectY) {
+						ballreflectY=false;
 					}
 				}
 				if (hit == false) {
@@ -68,21 +78,37 @@ public class BreakoutState {
 				}
 
 			} 
-			if(ballreflectY) {
-				BallState newball = new BallState (ball.getTl(),ball.getBr(),new Vector (ball.getVelocity().getX(),-ball.getVelocity().getY()));
-				ball=newball;
+			if(blockstl.size() == 1||blockstl.size() == 3) {
+				if(ballreflectY) {
+					BallState newball = new BallState (ball.getTl(),ball.getBr(),ball.getVelocity().mirrorOver(Vector.DOWN));
+					ball=newball;
+				}
+				if(ballreflectX) {
+					BallState newball = new BallState (ball.getTl(),ball.getBr(),ball.getVelocity().mirrorOver(Vector.RIGHT));
+					ball=newball;
+				}
 			}
-			if(ballreflectX) {
-				BallState newball = new BallState (ball.getTl(),ball.getBr(),new Vector (-ball.getVelocity().getX(),ball.getVelocity().getY()));
-				ball=newball;
+			if(blockstl.size() == 2) {
+				if(blockstl.get(0).getY() == blockstl.get(1).getY()) {
+					BallState newball = new BallState (ball.getTl(),ball.getBr(),ball.getVelocity().mirrorOver(Vector.DOWN));
+					ball=newball;
+				}
+				if(blockstl.get(0).getX() == blockstl.get(1).getX()) {
+					BallState newball = new BallState (ball.getTl(),ball.getBr(),ball.getVelocity().mirrorOver(Vector.RIGHT));
+					ball=newball;
+				}
 			}
+			
 			newballs.add(ball);
+			BlockState[] newblocksarray = new BlockState[newblocks.size()];
+			newblocks.toArray(newblocksarray);
+			blocks = newblocksarray;
+			
+			
 		}
 		newballs.toArray(balls);
-		BlockState[] newblocksarray = new BlockState[newblocks.size()];
-		newblocks.toArray(newblocksarray);
-		blocks = newblocksarray;
-		return newblocksarray;
+
+		return blocks;
 	}
 
 	public PaddleState getPaddle() {
@@ -98,7 +124,7 @@ public class BreakoutState {
 	public void tick(int paddleDir) {
 
 		ArrayList<BallState> newballs2 = new ArrayList<BallState>();
-		for (BallState ball:getBalls()) {
+		for (BallState ball: balls) {
 			if (ball.getBr().getY() >= getPaddle().getTl().getY()&&ball.getTl().getY() <= getPaddle().getBr().getY() && ball.getBr().getX()>= getPaddle().getTl().getX() && ball.getTl().getX()<= getPaddle().getBr().getX()) {
 				BallState newball = new BallState (ball.getTl(),ball.getBr(),new Vector (ball.getVelocity().getX()+2*paddleDir,-ball.getVelocity().getY()));
 				ball=newball;
@@ -122,21 +148,18 @@ public class BreakoutState {
 		newballs2.toArray(balls);
 
 		
-		getBlocks();
-		getBalls();
-		getPaddle();
 	}
 
 	public void movePaddleRight() {
 		if (paddle.getBr().getX() <=GameMap.getWidth()) {
-		PaddleState newpaddle = new PaddleState(paddle.getTl(),paddle.getBr(),100);
+		PaddleState newpaddle = new PaddleState(paddle.getTl(),paddle.getBr(),10);
 		paddle = newpaddle;
 		} 
 	}
 
 	public void movePaddleLeft() {
 		if (paddle.getTl().getX() >=0) {
-			PaddleState newpaddle = new PaddleState(paddle.getTl(),paddle.getBr(),-100);
+			PaddleState newpaddle = new PaddleState(paddle.getTl(),paddle.getBr(),-10);
 			paddle = newpaddle;
 		}
 		
@@ -152,7 +175,7 @@ public class BreakoutState {
 	}
 
 	public boolean isDead() {
-		if(Arrays.stream(getBalls(),0,getBalls().length).allMatch(e -> e.getBr().getY()>=GameMap.getHeight())){
+		if(Arrays.stream(balls,0,balls.length).allMatch(e -> e.getBr().getY()>=GameMap.getHeight())){
 			return true;
 		} else {
 
@@ -160,14 +183,6 @@ public class BreakoutState {
 		}
 
 	}
-
-	
-
-
-
-
-
-
 
 
 }

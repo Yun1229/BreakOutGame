@@ -52,12 +52,6 @@ public class PaddleState {
 		
 	}
 	
-	//public PaddleState clone() {
-		//return new PaddleState(new Point(tl.getX(),tl.getY()),new Point(br.getX(),br.getY()),getVelocity());
-		
-	//}
-	
-	
 
 
 
