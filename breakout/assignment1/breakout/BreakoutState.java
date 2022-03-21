@@ -34,6 +34,8 @@ public class BreakoutState {
 	private BlockState[] blocks;
 	private PaddleState paddle;
 	private Point bottomRight;
+	private static final int BOUNDARY = GameMap.getWidth();
+	
 	
 	
 	/**
@@ -251,7 +253,7 @@ public class BreakoutState {
 	 */
 
 	public void movePaddleRight() {
-		if (paddle.getBr().getX() <=GameMap.getWidth()) {
+		if (paddle.getBr().getX() <= BOUNDARY) {
 		PaddleState newpaddle = new PaddleState(paddle.getTl(),paddle.getBr(),100);
 		paddle = newpaddle;
 		} 

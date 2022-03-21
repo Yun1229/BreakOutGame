@@ -7,11 +7,9 @@ package breakout;
 
 public class BlockState {
 	// TODO: implement
-	private Point tl;
-	private Point br;
-	private BallState[] balls;
-	
-
+	private final Point tl;
+	private final Point br;
+ 
 	public BlockState(Point tl, Point br) {
 		this.tl = tl;
 		this.br = br;

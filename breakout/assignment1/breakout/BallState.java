@@ -10,9 +10,9 @@ public class BallState {
 	// TODO: implement
 
 
-	private Point tl;
-	private Point br;
-	private Vector velocity;
+	private final Point tl;
+	private final Point br;
+	private final Vector velocity;
 	
 
 
