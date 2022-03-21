@@ -15,7 +15,6 @@ public class PaddleState {
 
 	private final Point tl;
 	private final Point br;
-	
 	private final int velocity;
 
 
@@ -38,21 +37,16 @@ public class PaddleState {
 		return br;
 	}
 
-	public void getPosition() {
-
+	public Point getPosition() {
+		Point center = new Point((this.tl.getX()+this.br.getX())/2,(this.tl.getY()+this.br.getY())/2);
+		return center;
 	}
-
-	public void getSize() {
+	
+	public int getSize() {
 		int width = br.getY()-tl.getY();
 		int length = br.getX()-tl.getX();
+		return width*length;
 	}
-	
-	public PaddleState move(int direction) {
-		return new PaddleState(new Point(tl.getX()+direction,tl.getY()),new Point(br.getX()+direction,br.getY()),direction);
-		
-	}
-	
-
 
 
 }

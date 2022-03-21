@@ -10,7 +10,7 @@ public class GameMap {
 	private static final int WIDTH = 50000;
 	private static int BLOCK_LINES = 9;
 	private static int BLOCK_COLUMNS = 10;
-	private static final Vector INIT_BALL_VELOCITY = new Vector(5,7);
+	private static final Vector INIT_BALL_VELOCITY = new Vector(25,35);
 
 	private static BlockState createBlock(Point topleft) {
 		Vector marginBL = new Vector(20,20);

@@ -5,13 +5,59 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 // TODO: implement, document
+/**
+ * Abstract state invariants
+ * @invar | getBalls() != null
+ * @invar | getBlocks() != null
+ * @invar | getPaddle() != null
+ * @invar | getBottomRight() != null
+ * @invar | 0 <= getBalls().length
+ * @invar | 0 <= getBlocks().length
+ *
+ */
+
 public class BreakoutState {
+	
+	/**
+	 * Representation invariants
+	 * 
+	 * @invar | balls != null
+     * @invar | blocks != null
+     * @invar | paddle != null
+     * @invar | bottomRight != null
+	 * @invar | 0 <= balls.length
+	 * @invar | 0 <= blocks.length
+     * @representationObject
+	 */
 
 	private BallState[] balls;
 	private BlockState[] blocks;
 	private PaddleState paddle;
 	private Point bottomRight;
-
+	
+	
+	/**
+	 * Initializes this object with the given balls, blocks, bottomRight and paddle.
+	 * 
+	 * @pre | balls != null
+	 * @pre | blocks != null
+	 * @pre | paddle != null 
+	 * @pre | bottomRight != null
+	 * @post | getBalls() == balls 
+	 * @post | getBlocks() == blocks 
+	 * @post | getBottomRight() == bottomRight
+	 * @post | getPaddle() == paddle
+	 * @post some element in the balls equals ball.
+//	 *   | Arrays.stream(balls,0,balls.length - 1).anyMatch(e -> e == ball) //?
+	 * @post some element in the blocks equals block.
+//	 *   | Arrays.stream(blocks,0,blocks.length - 1).anyMatch(e -> e == block) //?
+	 * @throws IllegalArgumentEception
+	 *   | balls == null | blocks == null | paddle == null | bottomRight == null
+	 * @throw IllegalArgumentEception
+	 *   | Arrays.stream(balls).anyMatch(e -> e == null)
+	 *   | Arrays.stream(blocks).anyMatch(e -> e == null)
+//	 * @inspect | balls | blocks | paddle | bottomRight //no need @inspect? because having getter
+	 */
 
 	public BreakoutState(BallState[] balls, BlockState[] blocks, Point bottomRight,PaddleState paddle ) {
 		this.balls = balls;
@@ -19,6 +65,15 @@ public class BreakoutState {
 		this.paddle = paddle;
 		this.bottomRight = bottomRight;
 	}
+	
+	
+	/**
+	 * @post | result != null
+	 * @post | 0 <= getBalls().length
+	 * @post | Arrays.stream(result).allMatch(e -> e != null)
+	 * @creates | result
+	 * @inspect | this
+	 */
 
 
 
@@ -31,6 +86,14 @@ public class BreakoutState {
 
 		return newballs2.toArray(balls);
 	}
+	
+	/**
+	 * @post | result != null
+	 * @post | 0 <= getBlocks().length
+	 * @post | Arrays.stream(result).allMatch(e -> e != null)
+	 * @creates | result
+	 * @inspect | this
+	 */
 
 	public BlockState[] getBlocks() {
 		
@@ -110,33 +173,56 @@ public class BreakoutState {
 
 		return blocks;
 	}
+	
+	/**
+	 * @post | result != null
+	 * @creates | result
+	 * @inspect | this
+	 */
 
 	public PaddleState getPaddle() {
 		PaddleState newpaddle = new PaddleState(paddle.getTl().plus(new Vector(paddle.getVelocity(),0)),paddle.getBr().plus(new Vector(paddle.getVelocity(),0)),0);
 		paddle = newpaddle;
 		return paddle;
 	}
+	
+	/**
+	 * @post | result != null
+	 */
 
 	public Point getBottomRight() {
 		return this.bottomRight;
 	}
+	
+	/**
+	 * @pre | paddleDir == 0 || paddleDir == 1 || paddleDir == -1
+	 * @post | 0 <= getBalls().length
+	 * @throws IllegalArgumentException
+	 *   | paddleDir !=0 || paddleDir != 1 || paddleDir != -1
+	 * @creates | result
+	 * @inspect | this //add?
+	 */
 
 	public void tick(int paddleDir) {
 
 		ArrayList<BallState> newballs2 = new ArrayList<BallState>();
 		for (BallState ball: balls) {
+			// ball touch paddle
 			if (ball.getBr().getY() >= getPaddle().getTl().getY()&&ball.getTl().getY() <= getPaddle().getBr().getY() && ball.getBr().getX()>= getPaddle().getTl().getX() && ball.getTl().getX()<= getPaddle().getBr().getX()) {
-				BallState newball = new BallState (ball.getTl(),ball.getBr(),new Vector (ball.getVelocity().getX()+2*paddleDir,-ball.getVelocity().getY()));
+				BallState newball = new BallState (ball.getTl(),ball.getBr(),new Vector (ball.getVelocity().getX()+getPaddle().getVelocity()*(1/5)*paddleDir,-ball.getVelocity().getY()));
 				ball=newball;
 			}
+			// ball touch GameMapRight
 			if (ball.getBr().getX() >= GameMap.getWidth()) {
 				BallState newball = new BallState (ball.getTl(),ball.getBr(),new Vector (-ball.getVelocity().getX(),ball.getVelocity().getY()));
 				ball=newball;
 			}
+			// ball touch GameMapLeft
 			if (ball.getTl().getX() <= 0) {
 				BallState newball = new BallState (ball.getTl(),ball.getBr(),new Vector (-ball.getVelocity().getX(),ball.getVelocity().getY()));
 				ball=newball;
 			}
+			// ball touch GameMapTop
 			if (ball.getTl().getY() <= 0) {
 				BallState newball = new BallState (ball.getTl(),ball.getBr(),new Vector (ball.getVelocity().getX(),-ball.getVelocity().getY()));
 				ball=newball;
@@ -149,17 +235,27 @@ public class BreakoutState {
 
 		
 	}
+	
+	/**
+	 * @creates | result
+	 * @inspects | this //add?
+	 */
 
 	public void movePaddleRight() {
 		if (paddle.getBr().getX() <=GameMap.getWidth()) {
-		PaddleState newpaddle = new PaddleState(paddle.getTl(),paddle.getBr(),10);
+		PaddleState newpaddle = new PaddleState(paddle.getTl(),paddle.getBr(),100);
 		paddle = newpaddle;
 		} 
 	}
+	
+	/**
+	 * @creates | result
+	 * @inspects | this //add?
+	 */
 
 	public void movePaddleLeft() {
 		if (paddle.getTl().getX() >=0) {
-			PaddleState newpaddle = new PaddleState(paddle.getTl(),paddle.getBr(),-10);
+			PaddleState newpaddle = new PaddleState(paddle.getTl(),paddle.getBr(),-100);
 			paddle = newpaddle;
 		}
 		

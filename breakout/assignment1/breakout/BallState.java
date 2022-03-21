@@ -1,7 +1,5 @@
 package breakout;
 
-import java.util.Arrays;
-
 /**
  * Abstract state invarient:
  * @immutable
@@ -42,6 +40,14 @@ public class BallState {
 
 	public Point getBr() {
 		return br;
+	}
+
+	
+	public int getSize() {
+		double diameter = (br.getY()-tl.getY())*Math.sqrt(2);
+		System.out.println(Math.PI*(diameter/2)*(diameter/2));
+		return (int) Math.round((Math.PI*(diameter/2)*(diameter/2)));
+
 	}
 
 	
