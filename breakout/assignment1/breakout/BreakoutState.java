@@ -39,10 +39,6 @@ public class BreakoutState {
 	/**
 	 * Initializes this object with the given balls, blocks, bottomRight and paddle.
 	 * 
-	 * @pre | balls != null
-	 * @pre | blocks != null
-	 * @pre | paddle != null 
-	 * @pre | bottomRight != null
 	 * @post | getBalls() == balls 
 	 * @post | getBlocks() == blocks 
 	 * @post | getBottomRight() == bottomRight
@@ -51,15 +47,28 @@ public class BreakoutState {
 //	 *   | Arrays.stream(balls,0,balls.length - 1).anyMatch(e -> e == ball) //?
 	 * @post some element in the blocks equals block.
 //	 *   | Arrays.stream(blocks,0,blocks.length - 1).anyMatch(e -> e == block) //?
-	 * @throws IllegalArgumentEception
+	 * @throws IllegalArgumentException
 	 *   | balls == null | blocks == null | paddle == null | bottomRight == null
-	 * @throw IllegalArgumentEception
+	 * @throw IllegalArgumentException
 	 *   | Arrays.stream(balls).anyMatch(e -> e == null)
 	 *   | Arrays.stream(blocks).anyMatch(e -> e == null)
 //	 * @inspect | balls | blocks | paddle | bottomRight //no need @inspect? because having getter
 	 */
 
 	public BreakoutState(BallState[] balls, BlockState[] blocks, Point bottomRight,PaddleState paddle ) {
+		
+		if ( balls == null | blocks == null | paddle == null | bottomRight == null ) {
+			throw new IllegalArgumentException("The input parameters should not be null.");
+		}
+		
+		if (Arrays.stream(balls).anyMatch(e -> e == null)) {
+			throw new IllegalArgumentException("BallState array should not be null.");
+		}
+		
+		if (Arrays.stream(blocks).anyMatch(e -> e == null)) {
+			throw new IllegalArgumentException("BlockState array should not be null.");
+		}
+		
 		this.balls = balls;
 		this.blocks = blocks;
 		this.paddle = paddle;
