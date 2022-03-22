@@ -4,23 +4,34 @@ package breakout;
  * Abstract state invariants:
  * @invar | getTl() != null
  * @invar | getBr() != null
- //* @invar | getTl().getX()>=0 && getBr().getX()<= 右邊界
- //* @invar | getTl().getY()>=最後一個block.getBr().getY && getBr().getY()<= 下邊界 
  * 
  *@immutable
  */
 
 public class PaddleState {
 	// TODO: implement
+	
+	/**
+	 * Representation invariants:
+	 * 
+	 * @invar | tl.getX() <= br.getX()
+	 * @invar | tl.getY() <= br.getY()
+	 */
 
 	private final Point tl;
 	private final Point br;
 	private final int velocity;
 
 
-	public int getVelocity() {
-		return velocity;
-	}
+	
+	/**
+	 * 
+	 * @pre | tl != null
+	 * @pre | br != null
+	 * 
+	 * @post | getTl() == tl
+	 * @post | getBr() == br
+	 */
 
 
 	public PaddleState(Point tl, Point br,int velocity) {
@@ -36,17 +47,34 @@ public class PaddleState {
 	public Point getBr() {
 		return br;
 	}
+	
+	public int getVelocity() {
+		return velocity;
+	}
+	
+	/**
+	 * 
+	 * @post | result !=null
+	 * @creates | result
+	 */
 
 	public Point getPosition() {
 		Point center = new Point((this.tl.getX()+this.br.getX())/2,(this.tl.getY()+this.br.getY())/2);
 		return center;
 	}
 	
+	/**
+	 * 
+	 * @creates | result
+	 */
+	
 	public int getSize() {
 		int width = br.getY()-tl.getY();
 		int length = br.getX()-tl.getX();
 		return width*length;
 	}
+	
+
 
 
 }

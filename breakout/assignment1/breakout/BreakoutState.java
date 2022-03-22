@@ -41,10 +41,10 @@ public class BreakoutState {
 	/**
 	 * Initializes this object with the given balls, blocks, bottomRight and paddle.
 	 * 
-	 * @post | getBalls() == balls 
-	 * @post | getBlocks() == blocks 
+	 * @post | Arrays.equals(getBalls(),balls) 
+	 * @post | Arrays.equals(getBlocks(),blocks) 
 	 * @post | getBottomRight() == bottomRight
-	 * @post | getPaddle() == paddle
+//	 * @post | getPaddle() == paddle
 	 * @post some element in the balls equals ball.
 //	 *   | Arrays.stream(balls,0,balls.length - 1).anyMatch(e -> e == ball) //?
 	 * @post some element in the blocks equals block.
@@ -80,13 +80,11 @@ public class BreakoutState {
 	
 	/**
 	 * @post | result != null
-	 * @post | 0 <= getBalls().length
+	 * @post | 0 <= result.length
 	 * @post | Arrays.stream(result).allMatch(e -> e != null)
 	 * @creates | result
 	 * @inspect | this
 	 */
-
-
 
 	public BallState[] getBalls() {
 		ArrayList<BallState> newballs2 = new ArrayList<BallState>(); 
@@ -94,13 +92,15 @@ public class BreakoutState {
 			BallState newball = new BallState(ball.getTl().plus(ball.getVelocity()),ball.getBr().plus(ball.getVelocity()),ball.getVelocity());		
 			newballs2.add(newball);
 		}
-
+		newballs2.toArray(balls);
+		
+ 
 		return newballs2.toArray(balls);
 	}
 	
 	/**
 	 * @post | result != null
-	 * @post | 0 <= getBlocks().length
+	 * @post | 0 <= result.length
 	 * @post | Arrays.stream(result).allMatch(e -> e != null)
 	 * @creates | result
 	 * @inspect | this
