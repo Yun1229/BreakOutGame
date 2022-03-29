@@ -49,7 +49,7 @@ class BreakoutStateTest {
 		//assertEquals(new Vector(5,7),myNewBall.getVelocity()); //Working.
 	    //assertEquals(1,myBreakoutState.getBalls().length); //Working	
 		
-//      assertArrayEquals(new BallState[] {new BallState(new Point(8,10), new Point(10,12),new Vector(5,7))}, myBreakoutState.getBalls()); //Not working.
+        //assertArrayEquals(new BallState[] {new BallState(new Point(8,10), new Point(10,12),new Vector(5,7))}, myBreakoutState.getBalls()); //Not working.
 
 		
 //		assertEquals(myBlocksState, myBreakoutState.getBlocks());
