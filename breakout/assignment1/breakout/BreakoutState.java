@@ -215,11 +215,19 @@ public class BreakoutState {
 		ArrayList<BallState> newballs = new ArrayList<BallState>();
 
 		for (BallState ball: balls) {
-			List <Rectangle> list = new ArrayList<Rectangle>();
+			//Move all balls one step forward according to their current velocity.
+			BallState newball = new BallState(ball.getTl().plus(ball.getVelocity()),ball.getBr().plus(ball.getVelocity()),ball.getVelocity());
+			ball=newball;
+			
+			
+			List <Rectangle> rectangleList = new ArrayList<Rectangle>();
+			//Add blocks first
 			for (BlockState block: blocks) {
-				list.add(block);
+				rectangleList.add(block);
 			}
-			list.add(paddle);
+			//then add paddle
+			rectangleList.add(paddle);
+			
 			boolean removeball = false;
 			boolean ballreflectX = false;
 			boolean ballreflectY = false;
@@ -235,8 +243,11 @@ public class BreakoutState {
 
 			ArrayList<Point> blockstl = new ArrayList<Point>();
 			ArrayList<BlockState> newblocks = new ArrayList<BlockState>();
+			
 
+			
 
+			// Check whether any balls hit the walls on the left, right and top side of the game area, in which case they must bounce back.
 			// ball touch GameMapRight and GameMapLeft
 			if (ball.getBr().getX() >= GameMap.getWidth() || ball.getTl().getX() <= 0) {	
 				newvelocity = newvelocity.mirrorOver(Vector.RIGHT);
@@ -253,27 +264,30 @@ public class BreakoutState {
 			}
 
 
-
-			for (Rectangle rectangle : list) {			
-				//boolean hit = false;	
+			//Check whether any ball hit any block, in which case the block must be removed from the game and the ball must bounce back.
+			//Check whether any ball hit the paddle, in which case it must bounce back.
+			//Since the elements in `rectangleList` are in the order, the checking is also in the order.
+			for (Rectangle rectangle : rectangleList) {				
 				int rectangleTY=rectangle.getTl().getY();
 				int rectangleBY=rectangle.getBr().getY();
 				int rectangleLX=rectangle.getTl().getX();
 				int rectangleRX=rectangle.getBr().getX();
 
-
+				//If the ball hits the rectangles
 				if (ballLX <= rectangleRX && ballRX >= rectangleLX &&rectangleTY <= ballBY && rectangleBY >= ballTY) {
-
+					
 					Vector balltorectanglevector= new Vector((rectangleRX+rectangleLX)/2-ball.getCenter().getX(),(rectangleBY+rectangleTY)/2-ball.getCenter().getY());
-
+					//If the ball hit two sides of the rectangle
 					if (ballLX <= rectangleRX && ballRX >= rectangleRX 
 							|| ballRX >= rectangleLX && ballLX <= rectangleLX) {
 						ballreflectX=true;
 					}
+					//If the ball hit the top of the paddle or the the top and bottom of the blocks
 					if (rectangleTY <= ballBY && rectangleTY >= ball.getCenter().getY() 
 							|| rectangleBY <= ballBY && rectangleBY >= ballTY && rectangle instanceof BlockState) {
 						ballreflectY=true;
 					}
+					//Deal with the reflection on edges
 					if(balltorectanglevector.getX()*ball.getVelocity().getX()<0 
 							&& ballreflectX && ballreflectY) {
 						ballreflectX=false;
@@ -282,12 +296,13 @@ public class BreakoutState {
 							&& ballreflectX && ballreflectY&&rectangle instanceof BlockState) {
 						ballreflectY=false;
 					}
-
+					
+					//Renew blocks
 					if (rectangle instanceof BlockState) {
 						blockstl.add(rectangle.getTl());
 					}
 
-
+					//Renew paddle
 					if (rectangle instanceof PaddleState) {
 						if(ballreflectY&&!ballreflectX) {
 							newvelocity = newvelocity.plus(new Vector(paddle.getVelocity()/5,-2*newvelocity.getY()));
@@ -312,7 +327,7 @@ public class BreakoutState {
 
 						}
 						if(ballreflectX&&!ballreflectY) {
-							//Deal the vibration when the ball is squeezed by the paddle and the wall
+							//Deal with the vibration when the ball is squeezed by the paddle and the wall
 							if (ball.getCenter().getX()<= BOUNDARY&&ball.getCenter().getX()>=BOUNDARY-(ballRX-ballLX) 
 									|| ball.getCenter().getX() <= ballRX-ballLX&&ball.getCenter().getX() >=0) {
 								newvelocity = new Vector(0,Math.abs(newvelocity.getY()));
@@ -326,9 +341,15 @@ public class BreakoutState {
 								}
 							}
 							else{
-								newballTl = newballTl.plus(new Vector(paddle.getVelocity(),0));
-								newballBr = newballBr.plus(new Vector(paddle.getVelocity(),0));
-								newvelocity = newvelocity.plus(new Vector(paddle.getVelocity()*6/5-2*newvelocity.getX(),0));	
+								newballTl = newballTl.plus(new Vector(paddle.getVelocity()*6/5,0));
+								newballBr = newballBr.plus(new Vector(paddle.getVelocity()*6/5,0));
+								
+								if (newvelocity.getX()*paddle.getVelocity()>0) {
+								newvelocity = newvelocity.plus(new Vector(paddle.getVelocity()*6/5,0));	
+								}
+								else {
+									newvelocity = newvelocity.plus(new Vector(paddle.getVelocity()*6/5-2*newvelocity.getX(),0));
+								}
 							}					
 						}
 					}
@@ -360,7 +381,7 @@ public class BreakoutState {
 			}
 
 
-			BallState newball = new BallState(newballTl.plus(newvelocity),newballBr.plus(newvelocity),newvelocity);
+			newball = new BallState(newballTl,newballBr,newvelocity);
 			ball=newball;
 
 			if (!removeball) {
