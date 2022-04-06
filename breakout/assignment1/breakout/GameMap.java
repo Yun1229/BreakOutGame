@@ -8,7 +8,7 @@ public class GameMap {
 	private static final int INIT_BALL_DIAMETER = 700;
 	private static final int HEIGHT = 30000;
 	private static final int WIDTH = 50000;
-	private static int BLOCK_LINES = 9;
+	private static int BLOCK_LINES = 9; 
 	private static int BLOCK_COLUMNS = 10;
 	private static final Vector INIT_BALL_VELOCITY = new Vector(25,35);
 
