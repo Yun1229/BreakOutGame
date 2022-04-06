@@ -32,7 +32,7 @@ public class BreakoutState {
 	private PaddleState paddle;
 	private Point bottomRight;
 	private static final int BOUNDARY = GameMap.getWidth();
-	private static final int PADDLE_VELOCITY = 100;
+	private static final int PADDLE_VELOCITY = 10;
 
 
 	/**
