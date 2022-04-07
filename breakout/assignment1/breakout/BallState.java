@@ -1,17 +1,37 @@
 package breakout;
 
-/**
+/** 
  * Abstract state invariants:
  * @immutable
- * @invar | getCenter() !=null
- * @invar | getVelocity() !=null
- * @invar | getTl() !=null
- * @invar | getBr() !=null
- * @invar | getSize() >= 0
- * @invar | getRadius() >= 0
+ * @invar The given top left point is not null.
+ * | getTl() != null
+ * @invar The given bottom right point is not null.
+ * | getBr() != null
+ * @invar The given left edge is not greater than the given right edge. 
+ * | getTl().getX() <= getBr().getX()
+ * @invar The given top is not greater than the given bottom.
+ * | getTl().getY() <= getBr().getY()
  * 
-// * @invar | 0<=getTl().getX() && getTl().getX()<=GameMap.getWidth()-(getBr().getX()-getTl().getX())
-// * @invar | getTl().getX()<=getBr().getX() && getBr().getX()<=GameMap.getWidth()
+ * @invar The given center is not null.
+ * | getCenter() !=null
+ * @invar The center of the ball is in the middle of the left bound and right bound.
+ * | (getTl().getX() + getBr().getX())/2 == getCenter().getX() 
+ * @invar The center of the ball is in the middle of the top and the bottom.
+ * | (getTl().getY() + getBr().getY())/2 == getCenter().getY()  
+ * 
+ * @invar The given velocity is not null.
+ * | getVelocity() !=null
+ * 
+ * @invar The size of the ball is nonnegative.
+ * | getSize() >= 0
+ * @invar The size of the ball
+ * | getSize() == (int) Math.round((Math.PI*(getRadius())*(getRadius())))
+ * @invar The radius of the ball is nonnegative.
+ * 
+ * | getRadius() >= 0
+ * @invar The radius of the ball is half of the difference between the top and the bottom of the ball.
+ * | getRadius() == (getBr().getY()-getTl().getY())/2
+ * 
  * 
  */
 
@@ -22,9 +42,16 @@ public class BallState {
 	/**
 	 * Representation invariants
 	 * 
-	 * @invar | tl !=null
-	 * @invar | br !=null
-	 * @invar | velocity !=null
+	 * @invar The given top left point is not null.
+	 * | tl !=null
+	 * @invar The given bottom right point is not null.
+	 * | br !=null
+	 *  @invar The given left edge is not greater than the given right edge. 
+	 * | tl.getX() <= br.getX()
+	 * @invar The given top is not greater than the given bottom.
+	 * | tl.getY() <= br.getY()
+	 * @invar The given velocity is not null.
+	 * | velocity !=null
 	 */
 	private final Point tl;
 	private final Point br;
@@ -33,18 +60,31 @@ public class BallState {
 
 	/**
 	 * Initializes this object with the given tl, br, velocity.
-	 * @pre | tl != null
-	 * @pre | br != null
-	 * @pre | velocity != null
-	 * @pre | tl.getX() <= br.getX()
-	 * @pre | tl.getY() <= br.getY()
+	 * @pre The given top left point is not null.
+	 * | tl != null
+	 * @pre The given bottom right point is not null.
+	 * | br != null
+	 * @pre The given velocity is not null.
+	 * | velocity != null
+	 * @pre The given left edge is not greater than the given right edge.
+	 * | tl.getX() <= br.getX()
+	 * @pre The given top is not greater than the given bottom. 
+	 * | tl.getY() <= br.getY()
 	 * 
 	 * 
-	 * 
-	 * 
-	 * @post | getTl() == tl
-	 * @post | getBr() == br
-	 * @post | getVelocity() == velocity
+	 * @post The given top left point is not null.
+	 * | getTl() != null
+	 * @post The given bottom right point is not null.
+	 * | getBr() != null
+	 * @post The top left point of the rectangle equals the given top left point.
+	 * | getTl().equals(tl)
+	 * @post The bottom right point of the rectangle equals the given bottom right point.
+	 * | getBr().equals(br)
+	 * @post The given left edge is not greater than the given right edge. 
+	 * | tl.getX() <= br.getX()
+	 * @post The given top is not greater than the given bottom. 
+	 * | tl.getY() <= br.getY()
+	 * @post | getVelocity().equals(velocity)
 	 * 
 	 */
 	public BallState(Point tl, Point br, Vector velocity) {
@@ -55,11 +95,19 @@ public class BallState {
 	
 	
 	/**
-	 * @post | result != null
+	 * @post The center of the ball is not null.
+	 * | result != null
+	 * @post The center of the ball is in the middle of the left bound and right bound.
+	 * | (getTl().getX() + getBr().getX())/2 == result.getX() 
+	 * @post The center of the ball is in the middle of the top and the bottom.
+	 * | (getTl().getY() + getBr().getY())/2 == result.getY()  
+	 * 
 	 * @create | result
+	 * @inspect | this
+	 * 
 	 */
 	public Point getCenter() {
-		Point center = new Point((this.tl.getX()+this.br.getX())/2,(this.tl.getY()+this.br.getY())/2);
+		Point center = new Point((getTl().getX()+getBr().getX())/2,(getTl().getY()+getBr().getY())/2);
 		return center;
 	}
 	
@@ -78,17 +126,21 @@ public class BallState {
 	}
 
 	/**
-	 * @post | result >= 0
+	 * @post The size of the ball is nonnegative.
+	 * | result >= 0
+	 * @post The size of the ball
+	 * | result == (int) Math.round((Math.PI*(getRadius())*(getRadius())))
 	 * @create | result 
 	 */
 	public int getSize() {
-		double diameter = (br.getY()-tl.getY())*Math.sqrt(2);
-		return (int) Math.round((Math.PI*(diameter/2)*(diameter/2)));
-
+		return (int) Math.round((Math.PI*(getRadius())*(getRadius())));
 	}
 	
 	/**
-	 * @post | result >= 0
+	 * @post The radius of the ball is nonnegative.
+	 * | result >= 0
+	 * @post The radius of the ball is half of the difference between the top and the bottom of the ball.
+	 * | result == (getBr().getY()-getTl().getY())/2
 	 * @create | result
 	 */
 	public int getRadius() {
